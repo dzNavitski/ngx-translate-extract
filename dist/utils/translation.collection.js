@@ -37,14 +37,14 @@ export class TranslationCollection {
 		return new TranslationCollection(values);
 	}
 	union(collection) {
-		const values1 = collection.values[''];
-		const values2 = this.values[''];
+		const values1 = collection.values;
+		const values2 = this.values;
 		if (values1 && values2) {
 			const keys1 = Object.keys(values1);
 			const keys2 = Object.keys(values2);
 			keys1.forEach((key) => {
-				const ref1 = values1[key].reference;
-				const ref2 = values2[key].reference;
+				const ref1 = values1[key] ? values1[key].reference : undefined;
+				const ref2 = values2[key] ? values2[key].reference : undefined;
 				if (ref1 && ref2) {
 					values1[key].reference = [...ref1, ...ref2];
 				}
