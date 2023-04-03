@@ -25,7 +25,12 @@ export class MarkerParser implements ParserInterface {
 				return;
 			}
 			const strings = getStringsFromExpression(firstArg);
-			collection = collection.addKeys(strings);
+			collection = collection.addKeys(
+				strings,
+				strings.map((key) => {
+					return { value: '', reference: [filePath] };
+				})
+			);
 		});
 		return collection;
 	}

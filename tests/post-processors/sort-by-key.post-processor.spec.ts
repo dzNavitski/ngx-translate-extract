@@ -13,19 +13,19 @@ describe('SortByKeyPostProcessor', () => {
 
 	it('should sort keys alphanumerically', () => {
 		const collection = new TranslationCollection({
-			z: 'last value',
-			a: 'a value',
-			'9': 'a numeric key',
-			b: 'another value'
+			z: { value: 'last value' },
+			a: { value: 'a value' },
+			'9': { value: 'a numeric key' },
+			b: { value: 'another value' }
 		});
 		const extracted = new TranslationCollection();
 		const existing = new TranslationCollection();
 
 		expect(processor.process(collection, extracted, existing).values).to.deep.equal({
-			'9': 'a numeric key',
-			a: 'a value',
-			b: 'another value',
-			z: 'last value'
+			'9': { value: 'a numeric key' },
+			a: { value: 'a value' },
+			b: { value: 'another value' },
+			z: { value: 'last value' }
 		});
 	});
 });

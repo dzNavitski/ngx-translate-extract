@@ -1,5 +1,5 @@
 import { CompilerInterface } from './compiler.interface.js';
-import { TranslationCollection, TranslationType } from '../utils/translation.collection.js';
+import { TranslationCollection, TranslationData, TranslationType } from '../utils/translation.collection.js';
 
 import pkg from 'gettext-parser';
 const { po } = pkg;
@@ -24,11 +24,15 @@ export class PoCompiler implements CompilerInterface {
 			},
 			translations: {
 				[this.domain]: Object.keys(collection.values).reduce((translations, key) => {
+					const translationData: TranslationData = collection.get(key);
 					return {
 						...translations,
 						[key]: {
 							msgid: key,
-							msgstr: collection.get(key)
+							msgstr: translationData.value,
+							comments: {
+								reference: translationData.reference ? data.reference.join('\n') : undefined
+							}
 						}
 					};
 				}, {} as any)
@@ -50,9 +54,13 @@ export class PoCompiler implements CompilerInterface {
 		const values = Object.keys(parsedPo.translations[this.domain])
 			.filter((key) => key.length > 0)
 			.reduce((result, key) => {
+				const poValue = parsedPo.translations[this.domain][key];
 				return {
 					...result,
-					[key]: parsedPo.translations[this.domain][key].msgstr.pop()
+					[key]: {
+						value: poValue.msgstr.pop(),
+						reference: poValue.comments && poValue.comments.reference ? poValue.comments.reference.split('\n') : undefined
+					}
 				};
 			}, {} as TranslationType);
 

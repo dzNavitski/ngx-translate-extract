@@ -37,21 +37,21 @@ export class DirectiveParser implements ParserInterface {
 		elements.forEach((element) => {
 			const attribute = this.getAttribute(element, TRANSLATE_ATTR_NAME);
 			if (attribute?.value) {
-				collection = collection.add(attribute.value);
+				collection = collection.add(attribute.value, { value: '', reference: [filePath] });
 				return;
 			}
 
 			const boundAttribute = this.getBoundAttribute(element, TRANSLATE_ATTR_NAME);
 			if (boundAttribute?.value) {
 				this.getLiteralPrimitives(boundAttribute.value).forEach((literalPrimitive) => {
-					collection = collection.add(literalPrimitive.value);
+					collection = collection.add(literalPrimitive.value, { value: '', reference: [filePath] });
 				});
 				return;
 			}
 
 			const textNodes = this.getTextNodes(element);
 			textNodes.forEach((textNode) => {
-				collection = collection.add(textNode.value.trim());
+				collection = collection.add(textNode.value.trim(), { value: '', reference: [filePath] });
 			});
 		});
 		return collection;
