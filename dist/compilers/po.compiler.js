@@ -1,21 +1,12 @@
-import { CompilerInterface } from './compiler.interface.js';
-import { TranslationCollection, TranslationData, TranslationType } from '../utils/translation.collection.js';
-
+import { TranslationCollection } from '../utils/translation.collection.js';
 import pkg from 'gettext-parser';
 const { po } = pkg;
-
-export class PoCompiler implements CompilerInterface {
-	public extension: string = 'po';
-
-	/**
-	 * Translation domain
-	 */
-	public domain: string = '';
-
-	public constructor(options?: any) {}
-
-	public compile(collection: TranslationCollection): string {
-		const data: any = {
+export class PoCompiler {
+	extension = 'po';
+	domain = '';
+	constructor(options) {}
+	compile(collection) {
+		const data = {
 			charset: 'utf-8',
 			headers: {
 				'mime-version': '1.0',
@@ -24,7 +15,7 @@ export class PoCompiler implements CompilerInterface {
 			},
 			translations: {
 				[this.domain]: Object.keys(collection.values).reduce((translations, key) => {
-					const translationData: TranslationData = collection.get(key);
+					const translationData = collection.get(key);
 					return {
 						...translations,
 						[key]: {
@@ -35,22 +26,17 @@ export class PoCompiler implements CompilerInterface {
 							}
 						}
 					};
-				}, {} as any)
+				}, {})
 			}
 		};
-
 		return po.compile(data).toString('utf8');
 	}
-
-	public parse(contents: string): TranslationCollection {
+	parse(contents) {
 		const collection = new TranslationCollection();
-
 		const parsedPo = po.parse(contents, 'utf8');
-
 		if (!parsedPo.translations.hasOwnProperty(this.domain)) {
 			return collection;
 		}
-
 		const values = Object.keys(parsedPo.translations[this.domain])
 			.filter((key) => key.length > 0)
 			.reduce((result, key) => {
@@ -62,8 +48,8 @@ export class PoCompiler implements CompilerInterface {
 						reference: poValue.comments && poValue.comments.reference ? poValue.comments.reference.split('\n') : undefined
 					}
 				};
-			}, {} as TranslationType);
-
+			}, {});
 		return new TranslationCollection(values);
 	}
 }
+//# sourceMappingURL=po.compiler.js.map

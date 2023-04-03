@@ -9,6 +9,7 @@ describe('NamespacedJsonCompiler', () => {
 	beforeEach(() => {
 		compiler = new NamespacedJsonCompiler();
 	});
+
 	it('should flatten keys on parse', () => {
 		const contents = `
 			{
@@ -26,8 +27,8 @@ describe('NamespacedJsonCompiler', () => {
 
 	it('should unflatten keys on compile', () => {
 		const collection = new TranslationCollection({
-			'NAMESPACE.KEY.FIRST_KEY': '',
-			'NAMESPACE.KEY.SECOND_KEY': 'VALUE'
+			'NAMESPACE.KEY.FIRST_KEY': { value: '' },
+			'NAMESPACE.KEY.SECOND_KEY': { value: 'VALUE' }
 		});
 		const result: string = compiler.compile(collection);
 		expect(result).to.equal('{\n\t"NAMESPACE": {\n\t\t"KEY": {\n\t\t\t"FIRST_KEY": "",\n\t\t\t"SECOND_KEY": "VALUE"\n\t\t}\n\t}\n}');
@@ -35,9 +36,9 @@ describe('NamespacedJsonCompiler', () => {
 
 	it('should preserve numeric values on compile', () => {
 		const collection = new TranslationCollection({
-			'option.0': '',
-			'option.1': '',
-			'option.2': ''
+			'option.0': { value: '' },
+			'option.1': { value: '' },
+			'option.2': { value: '' }
 		});
 		const result: string = compiler.compile(collection);
 		expect(result).to.equal('{\n\t"option": {\n\t\t"0": "",\n\t\t"1": "",\n\t\t"2": ""\n\t}\n}');
@@ -45,8 +46,8 @@ describe('NamespacedJsonCompiler', () => {
 
 	it('should use custom indentation chars', () => {
 		const collection = new TranslationCollection({
-			'NAMESPACE.KEY.FIRST_KEY': '',
-			'NAMESPACE.KEY.SECOND_KEY': 'VALUE'
+			'NAMESPACE.KEY.FIRST_KEY': { value: '' },
+			'NAMESPACE.KEY.SECOND_KEY': { value: 'VALUE' }
 		});
 		const customCompiler = new NamespacedJsonCompiler({
 			indentation: '  '
@@ -57,8 +58,8 @@ describe('NamespacedJsonCompiler', () => {
 
 	it('should not reorder keys when compiled', () => {
 		const collection = new TranslationCollection({
-			BROWSE: '',
-			LOGIN: ''
+			BROWSE: { value: '' },
+			LOGIN: { value: '' }
 		});
 		const result: string = compiler.compile(collection);
 		expect(result).to.equal('{\n\t"BROWSE": "",\n\t"LOGIN": ""\n}');
