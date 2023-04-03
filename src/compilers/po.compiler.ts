@@ -31,7 +31,7 @@ export class PoCompiler implements CompilerInterface {
 							msgid: key,
 							msgstr: translationData.value,
 							comments: {
-								reference: translationData.reference ? data.reference.join('\n') : undefined
+								reference: translationData.reference ? translationData.reference.join('\n') : undefined
 							}
 						}
 					};
