@@ -95,6 +95,12 @@ export const cli = y
 		type: 'string',
 		conflicts: ['null-as-default-value', 'key-as-default-value']
 	})
+	.option('project', {
+		alias: 'pr',
+		describe: 'Project name',
+		type: 'string',
+		default: ''
+	})
 	.group(['format', 'format-indentation', 'sort', 'clean', 'replace'], 'Output')
 	.group(['key-as-default-value', 'null-as-default-value', 'string-as-default-value'], 'Extracted key value (defaults to empty string)')
 	.conflicts('key-as-default-value', 'null-as-default-value')
@@ -128,7 +134,8 @@ if (cli.sort) {
 }
 extractTask.setPostProcessors(postProcessors);
 const compiler = CompilerFactory.create(cli.format, {
-	indentation: cli.formatIndentation
+	indentation: cli.formatIndentation,
+	project: cli.project
 });
 extractTask.setCompiler(compiler);
 try {

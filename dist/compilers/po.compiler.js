@@ -4,7 +4,12 @@ const { po } = pkg;
 export class PoCompiler {
 	extension = 'po';
 	domain = '';
-	constructor(options) {}
+	project = '';
+	constructor(options) {
+		if (options.project) {
+			this.project = options.project;
+		}
+	}
 	compile(collection) {
 		const data = {
 			charset: 'utf-8',
@@ -16,13 +21,17 @@ export class PoCompiler {
 			translations: {
 				[this.domain]: Object.keys(collection.values).reduce((translations, key) => {
 					const translationData = collection.get(key);
+					const updateReference = (ref) => {
+						const pattern = new RegExp(`^.*?\\/${this.project}`);
+						return ref.replace(pattern, this.project);
+					};
 					return {
 						...translations,
 						[key]: {
 							msgid: key,
 							msgstr: translationData.value,
 							comments: {
-								reference: translationData.reference ? translationData.reference.join('\n') : undefined
+								reference: translationData.reference ? translationData.reference.map((ref) => updateReference(ref)).join('\n') : undefined
 							}
 						}
 					};

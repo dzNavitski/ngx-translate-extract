@@ -11,8 +11,13 @@ export class PoCompiler implements CompilerInterface {
 	 * Translation domain
 	 */
 	public domain: string = '';
+	public project: string = '';
 
-	public constructor(options?: any) {}
+	public constructor(options?: any) {
+		if (options.project) {
+			this.project = options.project;
+		}
+	}
 
 	public compile(collection: TranslationCollection): string {
 		const data: any = {
@@ -25,13 +30,17 @@ export class PoCompiler implements CompilerInterface {
 			translations: {
 				[this.domain]: Object.keys(collection.values).reduce((translations, key) => {
 					const translationData: TranslationData = collection.get(key);
+					const updateReference = (ref: string) => {
+						const pattern = new RegExp(`^.*?\\/${this.project}`);
+						return ref.replace(pattern, this.project);
+					};
 					return {
 						...translations,
 						[key]: {
 							msgid: key,
 							msgstr: translationData.value,
 							comments: {
-								reference: translationData.reference ? translationData.reference.join('\n') : undefined
+								reference: translationData.reference ? translationData.reference.map((ref) => updateReference(ref)).join('\n') : undefined
 							}
 						}
 					};
